@@ -4,8 +4,8 @@ from torch import nn
 
 def get_topk_mask(x, k, dim=-1):
     _, indices = pt.topk(x, k, dim=dim, sorted=False)
-    mask = pt.zeros_like(x, dtype=pt.bool)
-    mask.scatter_(dim, indices, True)
+    mask = pt.full_like(x, -pt.inf)
+    mask.scatter_(dim, indices, 0)
     
     return mask
 
@@ -23,7 +23,7 @@ class CoLa(nn.Module):
     def forward(self, x, q):
         attention = self.k_layer(q)
         attention_mask = get_topk_mask(attention, self.num_active)
-        sparse_attention = self.softmax(attention * attention_mask)
+        sparse_attention = self.softmax(attention + attention_mask)
         
         V = pt.bmm(self.V_1, self.V_0)
         
