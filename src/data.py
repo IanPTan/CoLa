@@ -19,7 +19,7 @@ class TaskDataset(pt.utils.data.Dataset):
 
     def __getitem__(self, idx):
         x, y = self.dataset[idx]
-        return x, y + self.label_offset, self.task_id
+        return x, y, self.task_id
 
 def get_dataloader(batch_size = 32):
     # fashion, class labels 0-9
@@ -42,7 +42,6 @@ def get_dataloader(batch_size = 32):
         transform=transforms.ToTensor()
     )
 
-    # Wrap datasets to include task IDs
     f_mnist = TaskDataset(f_mnist, task_id=0, label_offset=0)
     k_mnist = TaskDataset(k_mnist, task_id=1, label_offset=10)
     e_mnist = TaskDataset(e_mnist, task_id=2, label_offset=20)
