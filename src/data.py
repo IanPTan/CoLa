@@ -6,6 +6,19 @@ from torchvision import datasets, transforms
 ROOT = os.getcwd() + '/data'
 pt.manual_seed(123)
 
+class TaskDataset(pt.utils.data.Dataset):
+    def __init__(self, dataset, task_id):
+        self.dataset = dataset
+        self.task_id = task_id
+        self.targets = dataset.targets
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, idx):
+        x, y = self.dataset[idx]
+        return x, y, self.task_id
+
 def get_dataloader(batch_size = 32):
     # fashion
     f_mnist = datasets.FashionMNIST(root=ROOT, 
@@ -13,7 +26,7 @@ def get_dataloader(batch_size = 32):
         download=True, 
         transform=transforms.ToTensor()
     )
-    # hiragana 
+    # hiragana (japanese letters)
     k_mnist = datasets.KMNIST(root=ROOT, 
         train=True, 
         download=True, 
@@ -26,6 +39,11 @@ def get_dataloader(batch_size = 32):
         download=True,
         transform=transforms.ToTensor()
     )
+
+    # Wrap datasets to include task IDs
+    f_mnist = TaskDataset(f_mnist, 0)
+    k_mnist = TaskDataset(k_mnist, 1)
+    e_mnist = TaskDataset(e_mnist, 2)
 
     # big ass concatenated dataset
     train_set = ConcatDataset([f_mnist, k_mnist, e_mnist])
