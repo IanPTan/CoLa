@@ -11,6 +11,7 @@ class TaskDataset(pt.utils.data.Dataset):
         self.dataset = dataset
         self.task_id = task_id
         self.targets = dataset.targets
+        self.label_offset = label_offset
         self.offset_targets = dataset.targets + label_offset
 
     def __len__(self):
