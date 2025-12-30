@@ -60,23 +60,14 @@ def get_dataloader(batch_size = 32):
         sampler=ran_sampler
     )
 
-    # testing datasets for length
-    test_dl = DataLoader(
-        dataset=e_mnist,
-        batch_size=batch_size,
-        sampler=ran_sampler
-    )
-
     # train_set: 0-60000=fashion, 60000-120000=hiragana, 120000-244800=letters
 
-    return train_dl, test_dl
+    return train_dl
 
 if __name__ == "__main__":
     print("Testing dataloader...")
-    train_dl, test_dl = get_dataloader()
+    train_dl = get_dataloader()
     dataset = train_dl.dataset
     length = len(dataset)
 
-    test_length = len(test_dl.dataset)
     print(f"Loaded dataset in {ROOT} with length {length}")
-    print(f"Loaded test dataset in {ROOT} with length {test_length}")
